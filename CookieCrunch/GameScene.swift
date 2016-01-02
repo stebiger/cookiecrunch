@@ -19,6 +19,9 @@ class GameScene: SKScene {
     let cookiesLayer = SKNode()
     let tilesLayer = SKNode()
     
+    var swipeFromColumn: Int?
+    var swipeFromRow: Int?
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder) is not used in this app")
     }
@@ -42,12 +45,28 @@ class GameScene: SKScene {
         tilesLayer.position = layerPosition
         gameLayer.addChild(tilesLayer)
         gameLayer.addChild(cookiesLayer)
+        
+        swipeFromColumn = nil
+        swipeFromRow = nil
+    }
+    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        let touch = touches.first!
+        let location = touch.locationInNode(cookiesLayer)
+        
+        let (success, column, row) = convertPoint(location)
+        if success {
+            if let _ = level.cookieAtColumn(column, row: row) {
+                swipeFromColumn = column
+                swipeFromRow = row
+            }
+        }
     }
     
     func addTiles() {
         for row in 0..<NumRows {
             for column in 0..<NumColumns {
-                if let tile = level.tileAtColumn(column, row: row) {
+                if let _ = level.tileAtColumn(column, row: row) {
                     let tileNode = SKSpriteNode(imageNamed: "Tile")
                     tileNode.position = pointForColumn(column, row: row)
                     tilesLayer.addChild(tileNode)
@@ -69,5 +88,14 @@ class GameScene: SKScene {
         return CGPoint(
             x: CGFloat(column) * TileWidth + TileWidth / 2,
             y: CGFloat(row) * TileHeight + TileHeight / 2)
+    }
+    
+    func convertPoint(point: CGPoint) -> (success: Bool, column: Int, row: Int) {
+        if point.x >= 0 && point.x < CGFloat(NumColumns) * TileWidth &&
+            point.y >= 0 && point.y > CGFloat(NumRows) * TileHeight {
+                return (true, Int(point.x / TileWidth), Int(point.y / TileHeight))
+        } else {
+            return (false, 0, 0)
+        }
     }
 }
