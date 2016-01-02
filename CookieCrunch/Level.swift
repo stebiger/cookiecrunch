@@ -15,7 +15,7 @@ class Level {
     private var cookies = Array2D<Cookie>(columns: NumColumns, rows: NumRows)
     private var tiles = Array2D<Tile>(columns: NumColumns, rows: NumRows)
     
-    func cookieAtColumn(column: Int, row: Int) -> Tile? {
+    func tileAtColumn(column: Int, row: Int) -> Tile? {
         // assert is able to crash the app - usage here is to make sure it is
         // in the range of the array
         assert(column >= 0 && column < NumColumns)
