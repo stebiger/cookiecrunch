@@ -40,15 +40,34 @@ class Level {
         
         for row in 0..<NumRows {
             for column in 0..<NumColumns {
-                let cookieType = CookieType.random()
-                
-                let cookie = Cookie(column: column, row: row, cookieType: cookieType)
-                cookies[column, row] = cookie
-                
-                set.insert(cookie)
+                if tiles[column, row] != nil {
+                    let cookieType = CookieType.random()
+                    
+                    let cookie = Cookie(column: column, row: row, cookieType: cookieType)
+                    cookies[column, row] = cookie
+                    
+                    set.insert(cookie)
+                }
             }
         }
         
         return set
+    }
+    
+    init(filename: String) {
+        if let dictionary = Dictionary<String, AnyObject>.loadJSONFromBundle(filename) {
+            if let tilesArray: AnyObject = dictionary["tiles"] {
+                for (row, rowArray) in (tilesArray as! [[Int]]).enumerate()  {
+                    let tileRow = NumRows - row - 1
+                    
+                    for(column, value) in rowArray.enumerate() {
+                        if value == 1 {
+                            tiles[column, tileRow] = Tile()
+                        }
+                        
+                    }
+                }
+            }
+        }
     }
 }
