@@ -22,6 +22,8 @@ class GameScene: SKScene {
     var swipeFromColumn: Int?
     var swipeFromRow: Int?
     
+    var swipeHandler: ((Swap) -> ())?
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder) is not used in this app")
     }
@@ -109,9 +111,15 @@ class GameScene: SKScene {
         
         if let toCookie = level.cookieAtColumn(toColumn, row: toRow) {
             if let fromCookie = level.cookieAtColumn(swipeFromColumn!, row: swipeFromRow!) {
-                print("**** Swapping \(fromCookie) with \(toCookie) ****")
+                // print("**** Swapping \(fromCookie) with \(toCookie) ****")
+                if let handler = swipeHandler {
+                    let swap = Swap(cookieA: fromCookie, cookieB: toCookie)
+                    handler(swap)
+                }
             }
         }
+        
+        
     }
     
     func addTiles() {
@@ -148,5 +156,22 @@ class GameScene: SKScene {
         } else {
             return (false, 0, 0)
         }
+    }
+    
+    func animateSwap(swap: Swap, completion: () -> ()) {
+        let spriteA = swap.cookieA.sprite!
+        let spriteB = swap.cookieB.sprite!
+        
+        spriteA.zPosition = 100
+        spriteB.zPosition = 90
+        
+        let Duration: NSTimeInterval = 0.3
+        let moveA = SKAction.moveTo(spriteB.position, duration: Duration)
+        moveA.timingMode = .EaseOut
+        spriteA.runAction(moveA, completion: completion)
+        
+        let moveB = SKAction.moveTo(spriteA.position, duration: Duration)
+        moveB.timingMode = .EaseOut
+        spriteB.runAction(moveB)
     }
 }
