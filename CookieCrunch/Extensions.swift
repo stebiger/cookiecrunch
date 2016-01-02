@@ -12,7 +12,7 @@ extension Dictionary {
     static func loadJSONFromBundle(filename: String) -> Dictionary <String, AnyObject>? {
         var dataOK: NSData
         var dictionaryOK: NSDictionary = NSDictionary()
-        if let path = NSBundle.mainBundle().pathForResource(filename, ofType: "json") {
+        if let path = NSBundle.mainBundle().pathForResource(filename, ofType: "json", inDirectory:  "Levels") {
             let _: NSError?
             //let data = NSData(contentsOfFile: path, options: NSDataReadingOptions(), error: &error)
             do {
