@@ -50,6 +50,7 @@ class GameScene: SKScene {
         swipeFromRow = nil
     }
     
+    // Override the touch gesture recognition
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         let touch = touches.first!
         let location = touch.locationInNode(cookiesLayer)
@@ -59,6 +60,56 @@ class GameScene: SKScene {
             if let _ = level.cookieAtColumn(column, row: row) {
                 swipeFromColumn = column
                 swipeFromRow = row
+            }
+        }
+    }
+
+    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        if swipeFromColumn == nil { return }
+        
+        let touch = touches.first!
+        let location = touch.locationInNode(cookiesLayer)
+        
+        let (success, column, row) = convertPoint(location)
+        if success {
+            
+            var horzDelta = 0, vertDelta = 0
+            if column < swipeFromColumn! {
+                horzDelta = -1
+            } else if column > swipeFromColumn! {
+                horzDelta = 1
+            } else if row < swipeFromRow! {
+                vertDelta = -1
+            } else if row > swipeFromRow! {
+                vertDelta = 1
+            }
+            
+            if horzDelta != 0 || vertDelta != 0 {
+                trySwapHorizontal(horzDelta, vertical: vertDelta)
+                swipeFromColumn = nil
+            }
+        }
+    }
+    
+    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        swipeFromColumn = nil
+        swipeFromRow = nil
+    }
+
+    override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
+        touchesEnded(touches!, withEvent: event)
+    }
+    
+    func trySwapHorizontal(horzDelta: Int, vertical vertDelta: Int) {
+        let toColumn = swipeFromColumn! + horzDelta
+        let toRow = swipeFromRow! + vertDelta
+        
+        if toColumn < 0 || toColumn >= NumColumns { return }
+        if toRow < 0 || toRow >= NumRows { return }
+        
+        if let toCookie = level.cookieAtColumn(toColumn, row: toRow) {
+            if let fromCookie = level.cookieAtColumn(swipeFromColumn!, row: swipeFromRow!) {
+                print("**** Swapping \(fromCookie) with \(toCookie) ****")
             }
         }
     }
@@ -92,7 +143,7 @@ class GameScene: SKScene {
     
     func convertPoint(point: CGPoint) -> (success: Bool, column: Int, row: Int) {
         if point.x >= 0 && point.x < CGFloat(NumColumns) * TileWidth &&
-            point.y >= 0 && point.y > CGFloat(NumRows) * TileHeight {
+            point.y >= 0 && point.y < CGFloat(NumRows) * TileHeight {
                 return (true, Int(point.x / TileWidth), Int(point.y / TileHeight))
         } else {
             return (false, 0, 0)
