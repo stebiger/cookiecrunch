@@ -81,7 +81,13 @@ class GameViewController: UIViewController {
         }
     }
     
+    func decrementMoves() {
+        movesLeft--
+        updateLabels()
+    }
+    
     func beginNextTurn() {
+        decrementMoves()
         level.detectPossibleSwaps()
         view.userInteractionEnabled = true
     }
@@ -90,6 +96,7 @@ class GameViewController: UIViewController {
         movesLeft = level.maximumMoves
         score = 0
         updateLabels()
+        level.resetComboMultiplier()
         shuffle()
     }
     
