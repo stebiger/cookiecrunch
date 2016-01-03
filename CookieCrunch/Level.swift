@@ -15,6 +15,8 @@ class Level {
     private var cookies = Array2D<Cookie>(columns: NumColumns, rows: NumRows)
     private var tiles = Array2D<Tile>(columns: NumColumns, rows: NumRows)
     private var possibleSwaps = Set<Swap>()
+    var targetScore = 0
+    var maximumMoves = 0
     
     func tileAtColumn(column: Int, row: Int) -> Tile? {
         // assert is able to crash the app - usage here is to make sure it is
@@ -152,6 +154,8 @@ class Level {
                         
                     }
                 }
+                targetScore = dictionary["targetScore"] as! Int
+                maximumMoves = dictionary["moves"] as! Int
             }
         }
     }
@@ -248,6 +252,8 @@ class Level {
         //print("Horizontal matches: \(horizontalChains)")
         //print("Vertical matches: \(verticalChains)")
         
+        calculateScores(horizontalChains)
+        calculateScores(verticalChains)
         return horizontalChains.union(verticalChains)
     }
     
@@ -303,5 +309,11 @@ class Level {
             }
         }
         return columns
+    }
+    
+    private func calculateScores(chains: Set<Chain>) {
+        for chain in chains {
+            chain.score = 60 * (chain.length - 2)
+        }
     }
 }
