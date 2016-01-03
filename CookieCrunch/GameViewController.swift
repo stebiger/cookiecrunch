@@ -19,6 +19,9 @@ class GameViewController: UIViewController {
     @IBOutlet weak var scoreLabel: UILabel!
     @IBOutlet weak var movesLabel: UILabel!
     
+    @IBOutlet weak var gameOverPanel: UIImageView!
+    var tapGestureRecognizer: UITapGestureRecognizer!
+    
     override func prefersStatusBarHidden() -> Bool {
         return true
     }
@@ -37,12 +40,32 @@ class GameViewController: UIViewController {
         scoreLabel.text = String(format: "%ld", score)
     }
     
+    func showGameOverPanel() {
+        gameOverPanel.hidden = false
+        scene.userInteractionEnabled = false
+        
+        tapGestureRecognizer = UITapGestureRecognizer(target: self, action: "hideGameOver")
+        view.addGestureRecognizer(tapGestureRecognizer)
+    }
+    
+    func hideGameOver() {
+        view.removeGestureRecognizer(tapGestureRecognizer)
+        tapGestureRecognizer = nil
+        
+        gameOverPanel.hidden = true
+        scene.userInteractionEnabled = true
+        
+        beginGame()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         
         // Configure the view.
         let skView = view as! SKView
         skView.multipleTouchEnabled = false
+        gameOverPanel.hidden = true
         
         // Create and configure the scene.
         scene = GameScene(size: skView.bounds.size)
@@ -84,6 +107,14 @@ class GameViewController: UIViewController {
     func decrementMoves() {
         movesLeft--
         updateLabels()
+        
+        if score >= level.targetScore {
+            gameOverPanel.image = UIImage(named: "LevelComplete")
+            showGameOverPanel()
+        } else if movesLeft == 0 {
+            gameOverPanel.image = UIImage(named: "GameOver")
+            showGameOverPanel()
+        }
     }
     
     func beginNextTurn() {

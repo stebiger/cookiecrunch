@@ -49,6 +49,10 @@
                                 <color key="shadowColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <size key="shadowOffset" width="1" height="1"/>
                             </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="uTg-l2-GGb">
+                                <rect key="frame" x="0.0" y="220" width="320" height="150"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                            </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Score:" textAlignment="natural" lineBreakMode="tailTruncation" adjustsFontSizeToFit="NO" id="cwC-T3-4Af">
                                 <rect key="frame" x="246" y="25" width="45" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -71,6 +75,7 @@
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
+                        <outlet property="gameOverPanel" destination="uTg-l2-GGb" id="Ch4-F5-2Qd"/>
                         <outlet property="movesLabel" destination="Gg0-h9-xSj" id="Jme-rs-lO6"/>
                         <outlet property="scoreLabel" destination="tJR-fI-3hZ" id="bgL-76-BvJ"/>
                         <outlet property="targetLabel" destination="wSO-pk-k8s" id="GiJ-65-rfW"/>
