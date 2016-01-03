@@ -8,6 +8,7 @@
 
 import UIKit
 import SpriteKit
+import AVFoundation
 
 class GameViewController: UIViewController {
     var scene: GameScene!
@@ -22,6 +23,19 @@ class GameViewController: UIViewController {
     @IBOutlet weak var shuffleButton: UIButton!
     
     @IBOutlet weak var gameOverPanel: UIImageView!
+    
+    lazy var backgroundMusic: AVAudioPlayer = {
+        let url = NSBundle.mainBundle().URLForResource("Sounds/Mining by Moonlight", withExtension: "mp3")
+        let player: AVAudioPlayer?
+        do {
+            player = try AVAudioPlayer(contentsOfURL: url!)
+        } catch _ {
+            player = nil
+        }
+        player!.numberOfLoops = -1
+        return player!
+    }()
+    
     var tapGestureRecognizer: UITapGestureRecognizer!
     
     override func prefersStatusBarHidden() -> Bool {
@@ -91,6 +105,7 @@ class GameViewController: UIViewController {
         level = Level(filename: "Level_1")
         scene.level = level
         scene.addTiles()
+        backgroundMusic.play()
         beginGame()
     }
     
